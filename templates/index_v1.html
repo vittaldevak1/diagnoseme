@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiagnoseMe AI</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="screen active">
+    <div class="login-box">
+        <div class="logo">🏥</div>
+        <h1>DiagnoseMe <span>AI</span></h1>
+        <p class="tagline">Your smart medical assistant</p>
+        <input type="text" id="name-input" placeholder="Enter your name" />
+        <button onclick="handleLogin()">Get Started</button>
+    </div>
+</div>
+
+<!-- REGISTER SCREEN -->
+<div id="register-screen" class="screen">
+    <div class="login-box">
+        <h1>Let's set up <span>your profile</span></h1>
+        <p class="tagline">This helps us give better diagnosis</p>
+        <input type="number" id="age-input" placeholder="Age" min="1" max="120" />
+        <select id="gender-input">
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select>
+        <input type="text" id="allergies-input" placeholder="Known allergies (or 'none')" />
+        <input type="text" id="conditions-input" placeholder="Existing conditions (or 'none')" />
+        <input type="text" id="medications-input" placeholder="Current medications (or 'none')" />
+        <button onclick="handleRegister()">Save & Continue</button>
+    </div>
+</div>
+
+<!-- CHAT SCREEN -->
+<div id="chat-screen" class="screen">
+    <div class="chat-header">
+        <div class="header-left">
+            <span class="logo-small">🏥</span>
+            <div>
+                <h2>DiagnoseMe AI</h2>
+                <span class="status">● Online</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <span id="user-name-display"></span>
+            <button class="save-btn" onclick="saveSession()">Save Session</button>
+        </div>
+    </div>
+
+    <div class="chat-messages" id="chat-messages">
+        <div class="message ai-message">
+            <span>Hey! What's going on today?</span>
+        </div>
+    </div>
+
+    <div class="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Describe your symptoms... (click 'Save Session' when done)" onkeypress="handleKey(event)" />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script>
+    let userName = "";
+
+    function showScreen(id) {
+        document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+    }
+
+    async function handleLogin() {
+        const name = document.getElementById("name-input").value.trim();
+        if (!name) return alert("Please enter your name!");
+        if (!/^[a-zA-Z ]+$/.test(name)) return alert("Name should only contain letters!");
+
+        const res = await fetch("/login", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({name})
+        });
+        const data = await res.json();
+        userName = data.name;
+        document.getElementById("user-name-display").textContent = userName;
+
+        if (data.status === "existing") {
+            if (data.past.length > 0) {
+                const pastMsg = data.past.map(p => `📋 ${p.date}: ${p.summary}`).join("\n");
+                addMessage("ai", `Welcome back ${userName}! Here's your history:\n\n${pastMsg}\n\nWhat's going on today?`);
+            } else {
+                addMessage("ai", `Welcome back ${userName}! What's going on today?`);
+            }
+            showScreen("chat-screen");
+        } else {
+            showScreen("register-screen");
+        }
+    }
+
+    async function handleRegister() {
+        const age = document.getElementById("age-input").value;
+        const gender = document.getElementById("gender-input").value;
+        const allergies = document.getElementById("allergies-input").value.trim();
+        const conditions = document.getElementById("conditions-input").value.trim();
+        const medications = document.getElementById("medications-input").value.trim();
+
+        if (!age || !gender || !allergies || !conditions || !medications)
+            return alert("Please fill in all fields!");
+
+        const name = document.getElementById("name-input").value.trim();
+
+        await fetch("/register", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({name, age, gender, allergies, conditions, medications})
+        });
+
+        document.getElementById("user-name-display").textContent = name;
+        showScreen("chat-screen");
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById("chat-input");
+        const message = input.value.trim();
+        if (!message) return;
+        input.value = "";
+
+        addMessage("user", message);
+        addMessage("ai", "typing...", "typing-indicator");
+
+        const res = await fetch("/chat", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({message})
+        });
+        const data = await res.json();
+
+        document.querySelector(".typing-indicator")?.remove();
+        addMessage("ai", data.reply);
+    }
+
+    async function saveSession() {
+        const res = await fetch("/save", {method: "POST"});
+        const data = await res.json();
+        alert("Session saved! Summary: " + data.summary);
+    }
+
+    function addMessage(type, text, className = "") {
+        const messages = document.getElementById("chat-messages");
+        const div = document.createElement("div");
+        div.className = `message ${type}-message ${className}`;
+        div.innerHTML = `<span>${text.replace(/\n/g, "<br>")}</span>`;
+        messages.appendChild(div);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    function handleKey(event) {
+        if (event.key === "Enter") sendMessage();
+    }
+</script>
+</body>
+</html>
+
