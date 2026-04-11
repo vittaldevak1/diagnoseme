@@ -9,7 +9,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = "diagnoseme_secret_123"
 
-client = Groq(api_key=os.getenv("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"))
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 @app.route("/")
 def index():

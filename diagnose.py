@@ -1,7 +1,9 @@
 from groq import Groq
 from database import save_user, get_user, save_history, get_history
 
-client = Groq(api_key="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")
+from dotenv import load_dotenv
+load_dotenv()
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 print("Welcome to DiagnoseMe AI 🏥")
 print("="*40)
