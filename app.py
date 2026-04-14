@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify, session
 from groq import Groq
 from database import save_user, get_user, save_history, get_history
 from dotenv import load_dotenv
+from rag import retrieve_context
 import os
 
 load_dotenv()
@@ -55,15 +56,35 @@ def register():
 def chat():
     data = request.json
     user_input = data.get("message")
+    retrieved_docs = retrieve_context(user_input)
+
+    context = "\n\nRelevant medical knowledge:\n"
+    for doc in retrieved_docs:
+        context += f"{doc}\n\n"
+
     conversation = session.get("conversation", [])
+
+    conversation = [conversation[0]] + [
+        msg for msg in conversation[1:]
+        if "Relevant medical knowledge" not in msg.get("content", "")
+    ]
+
     conversation.append({"role": "user", "content": user_input})
+    conversation.insert(1, {
+        "role": "system",
+        "content": context
+    })
+
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=conversation
     )
+
     ai_reply = response.choices[0].message.content
+
     conversation.append({"role": "assistant", "content": ai_reply})
     session["conversation"] = conversation
+
     return jsonify({"reply": ai_reply})
 
 @app.route("/save", methods=["POST"])
@@ -95,6 +116,7 @@ friend who happens to know medicine. Rules:
 - When you have enough info, give a short clear diagnosis
 - Always end with recommending a real doctor, but say it casually like a friend would
 - You DO have memory of past sessions, use the history below to reference past visits
+- Use the provided medical knowledge to guide your reasoning. Prioritize it over general knowledge.
 
 Patient profile:
 {user_profile}
