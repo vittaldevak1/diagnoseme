@@ -1,32 +1,22 @@
-DiagnoseMe AI
+# DiagnoseMe AI
 
-Did something useful yayyy!! This was just a random idea I got during my bio class and started working on it immediately - idk why tho, but it was totally worth it. I learned a lot of new things and now pretty confident tht I can build this kinda gen AI with any idea.
+DiagnoseMe AI is an AI-powered preliminary medical assistant built to give users a reliable first opinion based on their symptoms. The idea started during a biology class and grew into a full GenAI project focused on solving real-world healthcare access problems. The system remembers important user information like allergies, existing conditions, and medications, so when a user logs in and describes symptoms, the AI can ask relevant follow-up questions and respond with literature-grounded possible conditions and precautions. It also maintains session history, making future interactions more context-aware and personalized.
 
-So, What does it do?
+The goal behind DiagnoseMe AI is to make basic medical guidance more accessible. Not everyone has easy access to a doctor, especially in remote areas, and even in cities people often look for quick reassurance before deciding whether to seek professional help. This system is designed to provide that first layer of clarity - helping users understand whether something might be serious or not. It is not a replacement for doctors, but a tool to make early healthcare support more reachable.
 
-When you login, the AI already knows everything about you - your allergies, existing conditions, medications. You describe your symptoms to it, it asks follow up questions like a real doctor would, and gives you a proper diagnosis based on medical literature. It remembers your past sessions too, so every visit it knows your history.
+The system is built using Python and Flask, with the Groq API running Llama 3.3 for fast reasoning, SQLite for storing user data and session history, and a RAG pipeline that retrieves relevant medical information from a structured dataset before generating responses. This ensures the assistant is grounded in data rather than relying only on model knowledge.
 
-The plan is to route you to a verified specialist in the right field who cross checks the AI's diagnosis before any prescription is given.
+Future improvements include specialist routing (where the AI suggests the right type of doctor), stronger RAG with richer diagnostic datasets, support for medical imaging such as rash photos or scans, a doctor validation layer before prescriptions, and a mobile application.
 
-Why DiagnoseMe AI?
+This is my first major project, but definitely not the last.
 
-Not everyone has easy access to a doctor. Someone in a remote or isolated area shouldn't have to travel hours just to get a basic medical opinion. Sometimes you're just busy and want to make sure that mole is just a mole and you just want a opinion from a specialist so you can move on with your day. Sometimes you're freaking out over a symptom at 2am and don't know if it's serious. DiagnoseMe is for all of that - a reliable first opinion, anytime, anywhere.
+Tech Stack
+- Backend: Python + Flask
+- AI Model: Llama 3.3 (Groq API)
+- Database: SQLite
+- RAG: TF-IDF with medical dataset (source:Kaggle)
+- Frontend: HTML / CSS / JavaScript
 
-What's coming??
+## Disclaimer
 
-(Then? no updates? ofc not check below)
-
- Specialist routing — choose your doctor type(which type of doctor you wanna visit a dermatologist, urologist or general doctor like that)  or let the AI figure it out based on your symptoms
- RAG pipeline — AI answers from real medical literature, not just training data, we'll add real diagnostic data to its database, so it has access to real world data and not only the books
- Medical imaging — upload a photo of a rash or scan for AI assisted analysis
- Verified specialist network — real doctors cross check and prescribe
- A mobile app
-
-
-Built with
- Python + Flask
- Groq API (Llama 3.3)
- SQLite
- HTML/CSS/JS
-
- This is my first project, but surely not last one!!
+This project is intended for informational purposes only and is not a substitute for professional medical advice.
