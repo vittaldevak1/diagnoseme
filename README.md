@@ -20,3 +20,14 @@ Tech Stack
 ## Disclaimer
 
 This project is intended for informational purposes only and is not a substitute for professional medical advice.
+
+## 📸 Demo
+
+### Chat Interaction
+![Chat](images/chat.png)
+
+### Diagnosis Output
+![Output](images/output.png)
+
+### UI
+![UI](images/ui.png)
