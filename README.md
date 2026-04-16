@@ -10,6 +10,10 @@ Future improvements include specialist routing (where the AI suggests the right 
 
 This is my first major project, but definitely not the last.
 
+## Live Demo
+
+[Give it a try!](https://diagnoseme-t4bn.onrender.com)
+
 Tech Stack
 - Backend: Python + Flask
 - AI Model: Llama 3.3 (Groq API)
