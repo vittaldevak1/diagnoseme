@@ -16,7 +16,7 @@ Tech Stack
 - Database: SQLite
 - RAG: TF-IDF with medical dataset (source:Kaggle)
 - Frontend: HTML / CSS / JavaScript
-
+- Deployment: Render (cloud hosting)
 ## Disclaimer
 
 This project is intended for informational purposes only and is not a substitute for professional medical advice.
