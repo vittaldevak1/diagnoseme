@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 from rag import retrieve_context
 import os
 
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))        
+
 load_dotenv()
 
 app = Flask(__name__)
