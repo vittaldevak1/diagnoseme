@@ -1,12 +1,9 @@
-from flask import Flask, render_template, request, jsonify, session
 from groq import Groq
 from database import save_user, get_user, save_history, get_history
 from dotenv import load_dotenv
 from rag import retrieve_context
+from flask import Flask, render_template, request, jsonify, session
 import os
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))        
 
 load_dotenv()
 
@@ -149,6 +146,5 @@ Previous Context:
 {past_context}
 """
 
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
